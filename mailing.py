@@ -1,5 +1,4 @@
 import smtplib, ssl
-from email.message import EmailMessage
 
 class EmailConst(object):
    def __init__(self, Subject, To, From, Content):
@@ -18,13 +17,8 @@ class EmailConst(object):
          "Content": self.Content
       }
 
-   def SendMail(self, Login: tuple, Content: dict, Mailing: str = "localhost"):
+  def SendMail(self, Login: tuple, Reciever: str, Content: dict, Mailing: str = "localhost") -> dict:
       '''Send mail via mailing server, use (smtp.gmail.com, 587) for gmail hosting.'''
-
-      mail = EmailMessage()
-      mail["Subject"] = Content.get("Subject")
-      mail["To"] = Content.get("To")
-      mail["From"] = Content.get("From")
 
       context = ssl.create_default_context()
       with smtplib.SMTP(Mailing, 587) as smtplib_server:
@@ -33,6 +27,6 @@ class EmailConst(object):
          smtplib_server.ehlo()
 
          smtplib_server.login(Login[0], Login[1])
-         smtplib_server.sendmail(Login[0], Login[0], Content.get("Content"))
+         smtplib_server.sendmail(Login[0], Reciever, Content.get("Content"))
 
-      return mail
+      return self.__dict__()
