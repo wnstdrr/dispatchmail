@@ -1,0 +1,2 @@
+# mailing
+Python mailing API
