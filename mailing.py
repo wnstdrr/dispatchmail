@@ -25,9 +25,12 @@ class EmailConst(object):
                 m.get("Subject"), m.get("To"), m.get("From"), m.get("Subject"
                 )
             )
-
-    def SendMail(self, Login: tuple, Content: dict = self.__dict__(), Mailing: str = "localhost") -> dict:
+    
+    def SendMail(self, Login: tuple, Content: dict = None, Mailing: str = "localhost") -> dict:
         '''Send mail via mailing server, use (smtp.gmail.com, 587) for gmail hosting.'''
+
+        if (Content == None):
+            Content = self.__dict__()
 
         context = ssl.create_default_context()
         with smtplib.SMTP(Mailing, 587) as smtplib_server:
