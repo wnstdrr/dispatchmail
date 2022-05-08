@@ -18,7 +18,7 @@ class EmailConst(object):
              "Content": self.Content
         }
 
-    def __str__(self)
+    def __str__(self):
         m = self.__dict__()
         return namedtuple(
             "EmailConst", ["Subject", "To", "From", "Content"])(
