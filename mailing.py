@@ -40,19 +40,20 @@ Subject: {self.Subject}
 
 {self.Content}"""
 
-    def SendMail(self, Login: tuple, Content: dict = None, Mailing: str = "localhost") -> dict:
+    def SendMail(self, Login: tuple, Content: dict = None, Mailing: tuple = ("localhost", 587)) -> dict:
         '''Send mail via mailing server, use (smtp.gmail.com, 587) for gmail hosting.
            
            NOTE: starting May 30, 2022, Google will no longer support the use of third-party apps or devices
            and the smtp.gmail.com server will be broken
         '''
-        
+ 
         username, passwd = Login[0], Login[1]
+        mail_server, mail_port = Mailing[0], Mailing[1]
         if (Content is None):
             Content = self.__dict__()
 
         context = ssl.create_default_context()
-        with smtplib.SMTP(Mailing, 587) as smtplib_server:
+        with smtplib.SMTP(mail_server, mail_port) as smtplib_server:
             smtplib_server.ehlo()
             smtplib_server.starttls(context=context)
             smtplib_server.ehlo()
