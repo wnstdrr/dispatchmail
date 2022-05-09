@@ -1,0 +1,3 @@
+# Ingore swp vim files and text
+*.swp
+*.txt
