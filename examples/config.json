@@ -1,0 +1,8 @@
+{"mailing": 
+    {
+        "subject": "The Subject",
+        "to": ["example@mailserver.com", "other@mailserver.com"],
+        "from": "example@mailserver.com",
+        "content": "The body"
+    }
+}
