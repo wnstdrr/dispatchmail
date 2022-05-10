@@ -1,3 +1,6 @@
 # Ingore swp vim files and text
 *.swp
 *.txt
+
+# Ignore cache directory
+__pycache__/
