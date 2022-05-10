@@ -1,6 +1,10 @@
-from collections import namedtuple
-import smtplib, ssl
-import configparser, json
+from collections import namedtuple as _namedtuple
+import smtplib as _smtplib
+
+import configparser as _configparser
+import ssl as _ssl
+import json as _json
+
 
 class EmailConst(object):
     def __init__(self, Subject, To, From, Content):
@@ -21,11 +25,12 @@ class EmailConst(object):
 
     def __str__(self) -> str:
         m = self.__dict__()
-        return str(namedtuple(
+        return str(_namedtuple(
             "EmailConst", ["Subject", "To", "From", "Content"])(
                 m.get("Subject"), m.get("To"), m.get("From"), m.get("Subject"
                 )
-            ))
+            )
+        )
 
     @property
     def mail(self) -> str:
@@ -55,8 +60,8 @@ Subject: {self.Subject}
         if (Content is None):
             Content = self.__dict__()
 
-        context = ssl.create_default_context()
-        with smtplib.SMTP(mail_server, mail_port) as smtplib_server:
+        context = _ssl.create_default_context()
+        with _smtplib.SMTP(mail_server, mail_port) as smtplib_server:
             smtplib_server.ehlo()
             smtplib_server.starttls(context=context)
             smtplib_server.ehlo()
@@ -76,11 +81,13 @@ class LoadMail(EmailConst):
         self.filetype = filetype
         
         if (str.lower(self.filetype) not in filetype_opts):
-            raise ValueError(f"Invalid configuration type, supported types are {filetype_opts}")
+            raise ValueError(
+                f"Invalid configuration type, supported types are {filetype_opts}"
+            )
 
         # exchange for match statement in newer versions
         if (filetype == "ini"):
-            configure = configparser.ConfigParser()
+            configure = _configparser.ConfigParser()
             configure.read(self.config)
 
             #set default section
@@ -89,6 +96,20 @@ class LoadMail(EmailConst):
                 self.configs.update({key: configure[mail]})
 
         elif (filetype == "json"):
-            pass
+            with open(config, "r") as configure:
+                configure = _json.load(configure)["mailing"]
+                self.configs.update(
+                    {
+                        "Subject": configure["subject"],
+                        "To": configure["to"],
+                        "From": configure["from"],
+                        "Content": configure["content"]
+                    }
+                )
 
-        super().__init__(self.configs["Subject"], self.configs["To"], self.configs["From"], self.configs["Content"])
+        super().__init__(
+            self.configs["Subject"],
+            self.configs["To"],
+            self.configs["From"],
+            self.configs["Content"]
+        )
