@@ -1,5 +1,6 @@
 from collections import namedtuple
 import smtplib, ssl
+import configparser, json
 
 class EmailConst(object):
     def __init__(self, Subject, To, From, Content):
@@ -10,7 +11,7 @@ class EmailConst(object):
         self.From = From
         self.Content = Content
 
-    def __dict__(self):
+    def __dict__(self) -> dict:
         return {
             "Subject": self.Subject,
              "To": self.To,
@@ -18,7 +19,7 @@ class EmailConst(object):
              "Content": self.Content
         }
 
-    def __str__(self):
+    def __str__(self) -> str:
         m = self.__dict__()
         return str(namedtuple(
             "EmailConst", ["Subject", "To", "From", "Content"])(
@@ -27,7 +28,7 @@ class EmailConst(object):
             ))
 
     @property
-    def mail(self):
+    def mail(self) -> str:
         if (type(self.To) == type([]) and len(self.To) >= 2):
             to_string = str(", ".join(self.To))
         else:
@@ -40,7 +41,7 @@ Subject: {self.Subject}
 
 {self.Content}"""
 
-    def SendMail(self, Login: tuple, Content: dict = None, Mailing: tuple = ("localhost", 587)) -> dict:
+    def SendMail(self, Login: tuple, Content: dict = None, Mailing: tuple = ("localhost", 587)) -> bool:
         '''Send mail via mailing server, use (smtp.gmail.com, 587) for gmail hosting.
            
            NOTE: starting May 30, 2022, Google will no longer support the use of third-party apps or devices
@@ -49,6 +50,8 @@ Subject: {self.Subject}
  
         username, passwd = Login[0], Login[1]
         mail_server, mail_port = Mailing[0], Mailing[1]
+        mail_sent = False
+
         if (Content is None):
             Content = self.__dict__()
 
@@ -60,5 +63,32 @@ Subject: {self.Subject}
 
             smtplib_server.login(username, passwd)
             smtplib_server.sendmail(username, Content.get("To"), self.mail)
+            mail_sent = True
+        return mail_sent
 
-        return self.__dict__()
+
+class LoadMail(EmailConst):
+    def __init__(self, config: str, filetype: str = "ini"):
+        '''Load and send mail from either a .ini file or json object'''
+        filetype_opts = ["json", "ini"]
+        self.configs = {"Subject": "", "To": "", "From": "", "Content": ""}
+        self.config = config
+        self.filetype = filetype
+        
+        if (str.lower(self.filetype) not in filetype_opts):
+            raise ValueError(f"Invalid configuration type, supported types are {filetype_opts}")
+
+        # exchange for match statement in newer versions
+        if (filetype == "ini"):
+            configure = configparser.ConfigParser()
+            configure.read(self.config)
+
+            #set default section
+            configure = configure["mailing"]
+            for mail, key in zip(["subject", "to", "from", "content"], self.configs.keys()):
+                self.configs.update({key: configure[mail]})
+
+        elif (filetype == "json"):
+            pass
+
+        super().__init__(self.configs["Subject"], self.configs["To"], self.configs["From"], self.configs["Content"])
