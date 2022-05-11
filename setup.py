@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="dispatchmail",
-    version="0.0.1",
+    version="0.0.2",
     license="Apache 2.0",
     author="Xander Tedder",
     author_email="xandertedder7@gmail.com",
