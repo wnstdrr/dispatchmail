@@ -9,6 +9,12 @@ As of May 30, 2022, Google will no longer support the use of third-party apps or
 and the smtp.gmail.com server will be broken. Recommend using local smtp mail server,
 default SendMail mailing settings are `Mailing=('localhost', 587)` but this can be changed.
 
+# Installation
+Download the source code release or pip install the project from PyPi
+```bash
+pip install dispatchmail
+```
+
 # Usage
 ```python
 from dispatchmail import EmailConst as Mail
