@@ -5,5 +5,6 @@ __version__ = "0.0.1"
 __license__ = "Apache 2.0"
 
 __name__ = "dispatchmail"
+__package__ = "dispatchmail"
 
 __all__ = ["EmailConst", "LoadMail"]
